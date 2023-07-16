@@ -1,0 +1,4 @@
+#!/bin/sh
+# Opening the last saved wallpaper on Nitrogen
+
+nitrogen --restore
