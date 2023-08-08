@@ -6,6 +6,7 @@ from libqtile.lazy   import lazy
 from libqtile.utils  import  guess_terminal
 from libqtile.log_utils import logger
 from libqtile import hook
+from libqtile.widget import base
 
 import os
 import subprocess
@@ -39,6 +40,7 @@ keys = [
     Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
     Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
     Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
+    Key([mod], "m", lazy.next_screen(), desc='Move to the next monitor'),
     # Toggle between split and unsplit sides of stack.
     # Split = all windows displayed
     # Unsplit = 1 window displayed, like Max layout, but still with
@@ -64,7 +66,7 @@ keys = [
     # Screenshot keybinding
     Key([], "Print", lazy.spawn("flameshot gui")),
 ]
-groups = [Group(i) for i in "123456789"]
+groups = [Group(i) for i in "1234"]
 
 for i in groups:
     keys.extend(
@@ -127,12 +129,12 @@ screens = [
                     },
                     name_transform=lambda name: name.upper(),
                 ),
-                widget.TextBox("Version1.0", name="default"),
+                widget.TextBox("Version1.0", name='default'),
                 # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
                 # widget.StatusNotifier(),
                 widget.Systray(),
                 widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
-                widget.QuickExit(),
+                widget.QuickExit(default_text='logout'),
             ],
             24,
             # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
