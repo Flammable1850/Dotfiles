@@ -1,22 +1,29 @@
 # Qtile Config by Luc Groot Landeweer(V1)
+from dbus_next import Message, Variant
+from dbus_next.constants import MessageType
+
 from libqtile import qtile
 from libqtile import bar, layout, widget
+
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy   import lazy
+
 from libqtile.utils  import  guess_terminal
 from libqtile.log_utils import logger
-from libqtile import hook
+from libqtile.utils import _send_dbus_message, add_signal_receiver
+
 from libqtile.widget import base
 
+from libqtile import hook
+from typing import TYPE_CHECKING
+
+import asyncio
 import os
 import subprocess
 
 
-
-
-
 mod = "mod4"
-terminal = guess_terminal()
+myTerm = "alacritty"
 
 keys = [
     # A list of available commands that can be bound to keys can be found
@@ -40,7 +47,6 @@ keys = [
     Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
     Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
     Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
-    Key([mod], "m", lazy.next_screen(), desc='Move to the next monitor'),
     # Toggle between split and unsplit sides of stack.
     # Split = all windows displayed
     # Unsplit = 1 window displayed, like Max layout, but still with
@@ -51,12 +57,16 @@ keys = [
         lazy.layout.toggle_split(),
         desc="Toggle between split and unsplit sides of stack",
     ),
+    # Switch focus of monitors
+    Key([mod], "period", lazy.next_screen(), desc='Move focus to next monitor'),
+    Key([mod], "comma", lazy.prev_screen(), desc='Move focus to prev monitor'),
     # Keybinds for starting applications
     Key([mod], "e",lazy.spawn("emacs"),desc="Launch Emacs"),
     Key([mod], "b",lazy.spawn("com.brave.Browser")),
     Key([mod], "Return",lazy.spawn("alacritty"), desc="Launch terminal"),
     Key([mod], "d", lazy.spawn("dmenu_run")),
     Key([mod], "w", lazy.spawn("bitwarden-desktop")),
+    Key([mod], "f", lazy.spawn("XIVLauncher.Core")),
     # Toggle between different layouts as defined below
     Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
@@ -66,7 +76,8 @@ keys = [
     # Screenshot keybinding
     Key([], "Print", lazy.spawn("flameshot gui")),
 ]
-groups = [Group(i) for i in "1234"]
+
+groups = [Group(i) for i in "123456789"]
 
 for i in groups:
     keys.extend(
@@ -78,7 +89,7 @@ for i in groups:
                 lazy.group[i.name].toscreen(),
                 desc="Switch to group {}".format(i.name),
             ),
-            # mod1 + shift + letter of group = switch to & move focused window to group
+            # mod1 + shift + letter of group = switch to & move focused window to grou
             Key(
                 [mod, "shift"],
                 i.name,
@@ -107,7 +118,6 @@ layouts = [
     # layout.VerticalTile(),
     # layout.Zoomy(),
 ]
-
 widget_defaults = dict(
     font="sans",
     fontsize=12,
@@ -120,7 +130,7 @@ screens = [
         top=bar.Bar(
             [
                 widget.CurrentLayout(),
-                widget.GroupBox(),
+                widget.GroupBox(highlight_method='line'),
                 widget.Prompt(),
                 widget.WindowName(),
                 widget.Chord(
@@ -129,12 +139,20 @@ screens = [
                     },
                     name_transform=lambda name: name.upper(),
                 ),
-                widget.TextBox("Version1.0", name='default'),
                 # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
                 # widget.StatusNotifier(),
                 widget.Systray(),
+                widget.OpenWeather(
+                    location='The Hague'
+                ),
+                widget.Mpris2(
+                    name="spotify",
+                    objname="org.mpris.MediaPlayer2.spotify",
+                    stop_pause_text="Paused",
+                    display_metadata=["xesam:title", "xesam:artist"],
+                ),
                 widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
-                widget.QuickExit(default_text='logout'),
+                widget.CheckUpdates(distro='Arch'),
             ],
             24,
             # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
