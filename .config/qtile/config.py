@@ -17,6 +17,8 @@ from libqtile.widget import base
 from libqtile import hook
 from typing import TYPE_CHECKING
 
+
+
 import asyncio
 import os
 import subprocess
@@ -76,7 +78,6 @@ keys = [
     # Screenshot keybinding
     Key([], "Print", lazy.spawn("flameshot gui")),
 ]
-
 groups = [Group(i) for i in "123456789"]
 
 for i in groups:
@@ -128,7 +129,7 @@ extension_defaults = widget_defaults.copy()
 screens = [
     Screen(
         top=bar.Bar(
-            [
+                [
                 widget.CurrentLayout(),
                 widget.GroupBox(highlight_method='line'),
                 widget.Prompt(),
@@ -143,16 +144,21 @@ screens = [
                 # widget.StatusNotifier(),
                 widget.Systray(),
                 widget.OpenWeather(
-                    location='The Hague'
+                    location='The Hague',
+                    font='Ubuntu Bold',
+                    background='#008000'
                 ),
-                widget.Mpris2(
-                    name="spotify",
-                    objname="org.mpris.MediaPlayer2.spotify",
-                    stop_pause_text="Paused",
-                    display_metadata=["xesam:title", "xesam:artist"],
+                widget.Clock(
+                    format='%d/%m/%y %H:%M',
+                    background='#8B1A1A',
+                    font='Ubuntu Bold'
                 ),
-                widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
-                widget.CheckUpdates(distro='Arch'),
+                widget.CheckUpdates(
+                    distro='Arch_checkupdates',
+                    no_update_string='No updates',
+                    font='Ubuntu Bold',
+                    background='#104E8B'
+                ),
             ],
             24,
             # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
@@ -204,7 +210,7 @@ wl_input_rules = None
 #
 # We choose LG3D to maximize irony: it is a 3D non-reparenting WM written in
 # java that happens to be on java's whitelist.
-wmname = "Qtile"
+wmname = "qtile"
 
 @hook.subscribe.startup
 def autostart():
