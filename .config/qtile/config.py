@@ -28,7 +28,14 @@ mod = "mod4"
 myTerm = "alacritty"
 
 keys = [
-    # A list of available commands that can be bound to keys can be found
+    Key([mod], "1", lazy.group["1"].toscreen()),  # Switch to Group 1
+    Key([mod], "2", lazy.group["2"].toscreen()),  # Switch to Group 2
+    Key([mod], "3", lazy.group["3"].toscreen()),  # Switch to Group 3
+    Key([mod], "4", lazy.group["4"].toscreen()),  # Switch to Group 4
+    Key([mod], "5", lazy.group["5"].toscreen()),  # Switch to Group 5
+    Key([mod], "6", lazy.group["6"].toscreen()),  # Switch to Group 6
+    Key([mod], "7", lazy.group["7"].toscreen()),  # Switch to Group 7
+    Key([mod], "8", lazy.group["8"].toscreen()),  # Switch to Group 8
     # at https://docs.qtile.org/en/latest/manual/config/lazy.html
     # Switch between windows
     Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
@@ -63,12 +70,10 @@ keys = [
     Key([mod], "period", lazy.next_screen(), desc='Move focus to next monitor'),
     Key([mod], "comma", lazy.prev_screen(), desc='Move focus to prev monitor'),
     # Keybinds for starting applications
-    Key([mod], "e",lazy.spawn("emacs"),desc="Launch Emacs"),
     Key([mod], "b",lazy.spawn("com.brave.Browser")),
     Key([mod], "Return",lazy.spawn("alacritty"), desc="Launch terminal"),
     Key([mod], "d", lazy.spawn("dmenu_run")),
     Key([mod], "w", lazy.spawn("bitwarden-desktop")),
-    Key([mod], "f", lazy.spawn("XIVLauncher.Core")),
     # Toggle between different layouts as defined below
     Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
@@ -78,31 +83,33 @@ keys = [
     # Screenshot keybinding
     Key([], "Print", lazy.spawn("flameshot gui")),
 ]
-groups = [Group(i) for i in "123456789"]
-
-for i in groups:
-    keys.extend(
-        [
-            # mod1 + letter of group = switch to group
-            Key(
-                [mod],
-                i.name,
-                lazy.group[i.name].toscreen(),
-                desc="Switch to group {}".format(i.name),
-            ),
-            # mod1 + shift + letter of group = switch to & move focused window to grou
-            Key(
-                [mod, "shift"],
-                i.name,
-                lazy.window.togroup(i.name, switch_group=True),
-                desc="Switch to & move focused window to group {}".format(i.name),
-            ),
-            # Or, use below if you prefer not to switch to that group.
-            # # mod1 + shift + letter of group = move focused window to group
-            # Key([mod, "shift"], i.name, lazy.window.togroup(i.name),
-            #     desc="move focused window to group {}".format(i.name)),
+groups = [
+        Group("1"),
+        Group("2"),
+        Group("3"),
+        Group("4"),
+        Group("5"),
+        Group("6"),
+        Group("7"),
+        Group("8"),
+        Group("9")
         ]
-    )
+for i in groups:
+    keys.extend([
+
+#CHANGE WORKSPACES
+        Key([mod], i.name, lazy.group[i.name].toscreen()),
+        Key([mod], "Tab", lazy.screen.next_group()),
+        Key([mod, "shift" ], "Tab", lazy.screen.prev_group()),
+        Key(["mod1"], "Tab", lazy.screen.next_group()),
+        Key(["mod1", "shift"], "Tab", lazy.screen.prev_group()),
+
+# MOVE WINDOW TO SELECTED WORKSPACE 1-10 AND STAY ON WORKSPACE
+        #Key([mod, "shift"], i.name, lazy.window.togroup(i.name)),
+# MOVE WINDOW TO SELECTED WORKSPACE 1-10 AND FOLLOW MOVED WINDOW TO WORKSPACE
+        Key([mod, "shift"], i.name, lazy.window.togroup(i.name) , lazy.group[i.name].toscreen()),
+    ])
+
 
 layouts = [
     layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_width=0),
@@ -216,3 +223,16 @@ wmname = "qtile"
 def autostart():
     home = os.path.expanduser('~/.config/qtile/autostart.sh')
     subprocess.Popen([home])
+
+@hook.subscribe.client_new
+def agroup(client):
+    # replace class_name with the actual
+    # class name of the app
+    # you can use xprop to find it
+    apps = {'emacs': '3',  'class_name': '71303169'},
+    apps = {'spotify':'9', 'class_name': 'Spotify'}
+
+    wm_class = client.window.get_wm_class()[0]
+    group = apps.get(wm_class, None)
+    if group:
+        client.togroup(group)
