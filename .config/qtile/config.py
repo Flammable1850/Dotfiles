@@ -74,6 +74,7 @@ keys = [
     Key([mod], "Return",lazy.spawn("alacritty"), desc="Launch terminal"),
     Key([mod], "d", lazy.spawn("dmenu_run")),
     Key([mod], "w", lazy.spawn("bitwarden-desktop")),
+    Key([mod], "e", lazy.spawn("emacs")),
     # Toggle between different layouts as defined below
     Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
@@ -229,8 +230,7 @@ def agroup(client):
     # replace class_name with the actual
     # class name of the app
     # you can use xprop to find it
-    apps = {'emacs': '3',  'class_name': '71303169'},
-    apps = {'spotify':'9', 'class_name': 'Spotify'}
+    apps = {'emacs': '3', 'class_name': 'emacs', 'spotify': '9', 'class_name':'spotify'}
 
     wm_class = client.window.get_wm_class()[0]
     group = apps.get(wm_class, None)
