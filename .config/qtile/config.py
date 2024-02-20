@@ -92,7 +92,12 @@ for vt in range(1, 8):
     )
 
 
-groups = [Group(i) for i in "123456789"]
+groups = [
+        Group("1", label="Game"), 
+        Group("2", label="Web"),
+        Group("3", label="Term"), 
+        Group("4", label="Vesktop"),
+    ]
 
 for i in groups:
     keys.extend(
