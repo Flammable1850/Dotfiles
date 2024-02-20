@@ -1,4 +1,3 @@
-#!/usr/bin/env sh
-nitrogen --restore &
-xrandr --output HDMI-0 --primary --left-of DP-0 &
-insync start 
+#!/bin/sh
+nitrogen --restore
+flameshot 
