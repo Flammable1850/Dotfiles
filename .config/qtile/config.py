@@ -1,11 +1,3 @@
-# Copyright (c) 2010 Aldo Cortesi
-# Copyright (c) 2010, 2014 dequis
-# Copyright (c) 2012 Randall Ma
-# Copyright (c) 2012-2014 Tycho Andersen
-# Copyright (c) 2012 Craig Barnes
-# Copyright (c) 2013 horsik
-# Copyright (c) 2013 Tao Sauvage
-#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -84,7 +76,6 @@ keys = [
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     Key([],   "Print", lazy.spawn("flameshot gui")),
     Key([mod], "d", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
-    Key([mod], "w", lazy.spawn("com.bitwarden.desktop")),
 ]
 
 # Add key bindings to switch VTs in Wayland.
@@ -246,3 +237,14 @@ wmname = "Qtile"
 def autostart():
     home = os.path.expanduser('~/.config/qtile/autostart.sh')
     subprocess.Popen([home])
+
+@hook.subscribe.client_new
+def agroup(client):
+    apps = {'steam': '1', 'brave-browser': '2', 'Alacritty': '3', 'vesktop': '4',} 
+
+
+    wm_class = client.window.get_wm_class()[0]
+    group = apps.get(wm_class, None)
+    if group:
+        client.togroup(group)
+        
