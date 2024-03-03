@@ -96,9 +96,10 @@ groups = [
         Group("1", label="Game"), 
         Group("2", label="Web"),
         Group("3", label="Term"), 
-        Group("4", label="Vesktop"),
+        Group("4", label="Chat"),
         Group("5", label="Music"),
-        Group("6", label="Files"), 
+        Group("6", label="Files"),
+        Group("7", label="Notes"), 
     ]
 
 for i in groups:
@@ -247,7 +248,7 @@ def autostart():
 
 @hook.subscribe.client_new
 def agroup(client):
-    apps = {'steam': '1', 'brave-browser': '2', 'Alacritty': '3', 'vesktop': '4', 'vlc': '5', 'dolphin': '6',} 
+    apps = {'steamwebhelper': '1', 'brave-browser': '2', 'Alacritty': '3', 'vesktop': '4', 'vlc': '5', 'dolphin': '6','obsidian': '7',} 
 
 
     wm_class = client.window.get_wm_class()[0]
