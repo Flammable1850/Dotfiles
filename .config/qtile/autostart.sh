@@ -1,3 +1,3 @@
 #!/bin/sh
 nitrogen --restore
-flameshot 
+flameshot
