@@ -248,7 +248,7 @@ def autostart():
 
 @hook.subscribe.client_new
 def agroup(client):
-    apps = {'steamwebhelper': '1', 'brave-browser': '2', 'Alacritty': '3', 'vesktop': '4', 'vlc': '5', 'dolphin': '6','obsidian': '7',} 
+    apps = {'steamwebhelper': '1', 'brave-browser': '2', 'Alacritty': '3', 'vesktop': '4', 'vlc': '5','spotify': '5', 'dolphin': '6','notion': '7','obsidian': '7'} 
 
 
     wm_class = client.window.get_wm_class()[0]
