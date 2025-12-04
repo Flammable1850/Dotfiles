@@ -1,0 +1,11 @@
+[workspaces]
+cmd = "hyprctl workspaces | awk '{if($2==\"true\"){printf \"[%s]\", $1} else {printf \"%s\", $1}}'"
+format = "{output}"
+
+###
+center = [ "calendar", "Clock" ]
+# ...
+[[CustomModule]]
+name = "calendar"
+icon = ""
+command = "zenity --calendar --title=\"Calendar\""
